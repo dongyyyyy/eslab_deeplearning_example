@@ -1,5 +1,5 @@
 import numpy as np
-from .loss_function import *
+import loss_function as loss 
 
 def ReLU(x):
     return np.maximum(0, x)
@@ -17,13 +17,6 @@ def softmax(z):
 
 class Network():
     def __init__(self, input_size, output_size, hidden_layers):
-        # Build a neural network with
-        # input size: 'input_size'
-        # output size: 'output_size'
-        # number of hidden layers as 'hidden_layers' where
-        # hidden_layers is a list of number nodes in layer
-
-        ############### Write code ######################
 
         # Define and initialize Weights and Bias in Dictionary format
         init_coef = 0.1
@@ -69,7 +62,7 @@ class Network():
 
         # Calculate Gradients
 
-        self.delta = {self.num_layers: self.A[self.num_layers] - one_hot(y, self.output_size)}
+        self.delta = {self.num_layers: self.A[self.num_layers] - loss.one_hot(y, self.output_size)}
         self.dW = {self.num_layers: np.matmul(self.A[self.num_layers - 1].T,
                                               self.delta[self.num_layers]) / batch_size}
         self.db = {self.num_layers: np.matmul(np.ones((1, batch_size)), self.delta[self.num_layers]) / batch_size}
@@ -84,7 +77,6 @@ class Network():
         self.dW.update({1: np.matmul(X.T, self.delta[1]) / batch_size})
         self.db.update({1: np.matmul(np.ones((1, batch_size)), self.delta[1]) / batch_size})
 
-    # Batch stochastic gradient descent
     def update(self, alpha):
         for i in range(1, self.num_layers + 1):
             self.W[i] = self.W[i] - alpha * (self.dW[i])
